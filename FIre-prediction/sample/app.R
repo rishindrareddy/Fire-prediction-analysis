@@ -52,6 +52,7 @@ USmap <- get_map(location = c(lon = mean(df$lon), lat = mean(df$lat)), zoom = 4,
                  maptype = "roadmap", scale = 1)
 
 
+
 server <- function(input,output,session) {
   
   
@@ -66,5 +67,6 @@ server <- function(input,output,session) {
   output$R <- renderText({paste("Rain in mm: ",myData$Rain)})
   output$F <-renderText({paste("fire chances: ",myData$fire)})
 }
+
 
 shinyApp( ui = ui,server = server)
