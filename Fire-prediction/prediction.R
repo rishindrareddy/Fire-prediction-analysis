@@ -14,12 +14,14 @@ mapgilbert <- get_map(location = c(lon = mean(df$lon), lat = mean(df$lat)), zoom
 library("jsonlite")
 
 myData <- fromJSON("http://fire-detector-app.mybluemix.net/api/sensor/getdata")
+myData$Lat
+myData$Long
 myData$Temperature
 myData$Rh
 myData$Rain
 
 
-my <- function(data1){
+PredictFire <- function(data1){
   
   if((data1$Temperature > 25)&&(data1$Rh<20)&&(data1$Rain<2)){
     data1$fire <-'high'
@@ -34,30 +36,16 @@ my <- function(data1){
   } 
 }
 
-my1 <- function(data2){
-  
-  
-  
-  if(data2$fire == 'high'){
-    data2$color<-'red'
-  }  
-  else{
-    if(data2$fire == 'medium'){
-      data2$color<-'orange'
-    }
-    else{
-      data2$color<-'green'
-    }
-  } 
-}
-
-myData$fire <- my(myData)
-myData$color <- my1(myData)
-fireChances <- myData$fire
-
+myData$fire <- PredictFire(myData)
+if(myData$fire=="low"){
+  plotColor<-'green'
+}else {
+    if(myData$fire=="medium"){plotColor<-'orange'}
+      else{plotColor<-'red'}
+  }
 
 
 # plotting the map with some points on it
-ggmap(mapgilbert) +geom_point( aes(myData$Long,myData$Lat),color = "red", size = 5, shape = 21)
-
+p <- ggmap(mapgilbert) +geom_point( aes(myData$Long,myData$Lat),color = plotColor, size = 4)
+p
 myData
